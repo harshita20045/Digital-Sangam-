@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: "user",
     },
+      isVerified: {
+      type: Boolean,
+      default: false,
+    },
     badges: [
       {
         badgename: {

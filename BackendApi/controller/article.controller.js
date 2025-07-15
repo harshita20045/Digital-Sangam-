@@ -1,52 +1,72 @@
 import { Article } from "../models/article.model.js";
 
-export const createArticle = async (request, response) => {
+// 👤 USER: Create article (default status: pending)
+export const createArticle = async (req, res) => {
   try {
-    const { title, content } = request.body;
-    const author = request.user.id;
+    const { title, content } = req.body;
+    const author = req.user.id;
 
-    const article = await Article.create({
-      title,
-      content,
-      author,
-    });
-
-    return response.status(201).json({ message: "Article Added....", article });
+    const article = await Article.create({ title, content, author });
+    return res.status(201).json({ message: "Article submitted for review", article });
   } catch (error) {
-    console.log(error);
-    return response.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-export const seeArticleByCurrentUser = async (request, response, next) => {
+// 👤 USER: View own articles (pending/approved/rejected)
+export const seeMyArticles = async (req, res) => {
   try {
-    let id = request.user.id;
-    console.log(id);
-
-    const article = await Article.find({ author: id } );
-    if (!article)
-      return response.status(400).json({ message: "No article are there" });
-
-    return response
-      .status(201)
-      .json({ message: "Your Posted Articles", article });
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({ message: "Internal Server Error" });
+    const articles = await Article.find({ author: req.user.id });
+    return res.status(200).json({ articles });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-export const getAllArticleIncludingUser= async (request,response,next)=>{
-   try{
-    const articles= await Article.find().populate("author")
+// 👥 PUBLIC / ADMIN: View only approved articles
+export const getAllApprovedArticles = async (req, res) => {
+  try {
+    const articles = await Article.find({ status: "approved" }).populate("author", "name email");
+    return res.status(200).json({ articles });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
-    if(!articles)
-      return response.status(400).json({message:"Articles are not available"});
+// 🛡️ ADMIN: Get all pending articles
+export const getPendingArticles = async (req, res) => {
+  try {
+    const articles = await Article.find({ status: "pending" }).populate("author", "name email");
+    return res.status(200).json({ articles });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
-    return response.status(201).json({message:"Articles are : ",articles})
-   }catch(error){
+// 🛡️ ADMIN: Approve or Reject article
+export const changeArticleStatus = async (req, res) => {
+  try {
+    const { articleId } = req.params;
+    const { status } = req.body; // "approved" or "rejected"
 
-    console.log(error)
-    return response.status(500).json({message:"Internal Server Error"})
-   }
-}
+    if (!["approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
+    await Article.findByIdAndUpdate(articleId, { status });
+    return res.status(200).json({ message: `Article ${status} successfully` });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+// 🛡️ ADMIN: Delete article
+export const deleteArticle = async (req, res) => {
+  try {
+    const { articleId } = req.params;
+    await Article.findByIdAndDelete(articleId);
+    return res.status(200).json({ message: "Article deleted" });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
