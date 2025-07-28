@@ -1,14 +1,10 @@
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
-import Main from "./Main";
-import Question from "./Question";
+import Faq from "./Faq/Faq";
+import Us from "./Us/Us";
 
-function Help() {
+function Help(){
   return <>
-  <Header/>
-  <Main/>
-  <Question/>
-  <Footer/>
+  <Header/><Us/><Faq/><Footer/>
   </>
-}
-export default Help;
+}export default Help;

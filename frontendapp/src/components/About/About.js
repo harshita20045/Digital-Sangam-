@@ -1,19 +1,17 @@
 import Footer from "../Footer/Footer";
 import Header from "../Header/Header";
-import MissionVision from "./Mission-Vision";
-import Rooted from "./Rooted";
-import Us from "./Us";
+import MissionVission from "./MissionVision/MissionVission";
+import Our from "./Our/Our";
+import Rooted from "./Rooted/Rooted";
 
-function About() {
+function About(){
+
   return <>
-   <Header/>
-   <Us/>
-   <MissionVision/>
-   <Rooted/>
-       <hr/>
-   <Footer/>
-
- </> 
+  <Header/>
+  <Our/>
+ <MissionVission/> 
+ <Rooted/>
+  <Footer/>
+  </>
 }
-
 export default About;

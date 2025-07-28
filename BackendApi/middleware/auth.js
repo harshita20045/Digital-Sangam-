@@ -10,6 +10,7 @@ export const auth = (request, response, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     request.user = decoded;
+    console.log(decoded);
     next();
   } catch (err) {
     return response.status(401).json({ message: "Unauthorized User" });
@@ -18,6 +19,7 @@ export const auth = (request, response, next) => {
 
 export const isAdmin = (request, response, next) => {
   if (request.user.role !== "admin") {
+    console.log(request.user.role);
     return response.status(400).json({ message: "Admin Can Only access this" });
   }
   next();
@@ -25,6 +27,7 @@ export const isAdmin = (request, response, next) => {
 
 export const isUser = (request, response, next) => {
   if (request.user.role !== "user") {
+    console.log(request.user.role);
     return response.status(400).json({ message: "User Can Only access this" });
   }
   next();

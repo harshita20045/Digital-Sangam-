@@ -1,4 +1,4 @@
-import { QuizAttempt } from "../models/quizAttempt.model.js";
+import {QuizAttempt} from "../models/quiz_attempt.model.js"
 
 export const submitQuizAttempt = async (req, res) => {
   try {

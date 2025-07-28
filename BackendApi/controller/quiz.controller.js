@@ -1,4 +1,4 @@
-import { Quiz } from "../models/quiz.model.js";
+import { Quiz } from "../models/quize.model.js";
 
 export const createQuiz = async (req, res) => {
   try {

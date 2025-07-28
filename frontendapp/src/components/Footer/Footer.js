@@ -1,68 +1,69 @@
-import "./Footer.css";
-import logo from '../../images/footer.png'; 
+import { IoMdMail } from "react-icons/io";
+import footer from "../../images/Footer.png";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLocationDot,
+  FaTwitter,
+  FaYoutube,
+} from "react-icons/fa6";
+import { FaPhoneAlt } from "react-icons/fa";
 
 function Footer() {
-  return <>
-
-    <footer className="footer-main">
-      <div className="footer-container">
-        <div className="footer-left">
-          <div className="footer-logo">
-            <img src={logo} alt="Digital Sangam" style={{ height:"70px",width:"180px"}} />
-           
-          </div>
-          <p className="footer-description">
+  return (
+    <div className="container-fluid py-5"  style={{ background: 'linear-gradient(to right, #f8f1e8ff, #f9e5e5ff)' }}>
+      <div className="row gy-4 px-3 px-md-5">
+ 
+        <div className="col-12 col-md-4">
+          <img src={footer} alt="DigitalSangam" style={{ width: "60%", maxWidth: "200px" }} />
+          <p className="text-muted mt-3">
             Preserving and celebrating India's rich cultural heritage through digital innovation.
             Connecting communities, languages, and traditions for future generations.
           </p>
-          <div className="footer-contact">
-            <p>📧 contact@digitalsangam.org</p>
-            <p>📞 +91 7470361548</p>
-            <p>📍 Indore, India</p>
-          </div>
-          <div className="footer-icons">
-            <a href="#"><i className="fab fa-whatsapp"></i></a>
-            <a href="#"><i className="fab fa-twitter"></i></a>
-            <a href="#"><i className="fab fa-facebook"></i></a>
-            <a href="#"><i className="fab fa-instagram"></i></a>
+          <p className="text-muted"><IoMdMail className="me-2" /> contact@digitalsangam.org</p>
+          <p className="text-muted"><FaPhoneAlt className="me-2" /> +91 7470361548</p>
+          <p className="text-muted"><FaLocationDot className="me-2" /> Indore, India</p>
+          <div className="d-flex gap-2 mt-3">
+            {[FaFacebookF, FaInstagram, FaTwitter, FaYoutube].map((Icon, idx) => (
+              <div key={idx} className="rounded-circle bg-white p-2 text-muted shadow-sm" style={{ width: 36, height: 36, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Icon size={16} />
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="footer-links d-flex justify-content-between align-items-start flex-wrap ml-5 mt-2">
-          <div>
-            <h5>Explore</h5>
-            <a href="#">Indian Dialects</a>
-            <a href="#">Tribal Heritage</a>
-            <a href="#">Cultural Articles</a>
-            <a href="#">Media Gallery</a>
-          </div>
-          <div>
-            <h5>Learn</h5>
-            <a href="#">Cultural Quizzes</a>
-            <a href="#">About Us</a>
-            <a href="#">Help & FAQs</a>
-            <a href="#">Contact Us</a>
-          </div>
-          <div>
-            <h5>Connect</h5>
-            <a href="#">Community</a>
-            <a href="#">Newsletter</a>
-            <a href="#">Events</a>
-            <a href="#">Partnerships</a>
-          </div>
+ 
+        <div className="col-6 col-md-2">
+          <h6 className="mb-3 fw-bold">Explore</h6>
+          {["Indian Dialects", "Tribal Heritage", "Cultural Articles", "Media Gallery"].map((item, idx) => (
+            <p key={idx} className="text-muted small m-0 py-1">{item}</p>
+          ))}
+        </div>
+
+        <div className="col-6 col-md-2">
+          <h6 className="mb-3 fw-bold">Learn</h6>
+          {["Cultural Quizzes", "About Us", "Help & FAQs", "Contact Us"].map((item, idx) => (
+            <p key={idx} className="text-muted small m-0 py-1">{item}</p>
+          ))}
+        </div>
+
+        <div className="col-12 col-md-4 col-lg-2">
+          <h6 className="mb-3 fw-bold">Connect</h6>
+          {["Community", "Newsletter", "Events", "Partnerships"].map((item, idx) => (
+            <p key={idx} className="text-muted small m-0 py-1">{item}</p>
+          ))}
         </div>
       </div>
 
-      <hr />
+      <hr className="my-4 mx-auto" style={{ width: "90%", color: "#7c7b7bff" }} />
 
-      <div className="footer-bottom">
-        <p>© 2025 Digital Sangam. All rights reserved. Made with ❤️ for Indian Culture.</p>
-        <div>
-          <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a>
-        </div>
+    
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 px-md-5 text-muted" style={{ fontSize: "14px" }}>
+        <div className="mb-2 mb-md-0">© 2025 Digital Sangam</div>
+        <div>All rights reserved</div>
       </div>
-    </footer>
-  </>
+    </div>
+  );
 }
 
 export default Footer;

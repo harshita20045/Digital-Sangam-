@@ -1,27 +1,26 @@
 import express from "express";
-import {
-  createArticle,
-  seeMyArticles,
-  getAllApprovedArticles,
-  getPendingArticles,
-  changeArticleStatus,
-  deleteArticle,
-} from "../controller/article.controller.js";
+import { createArticle, deleteArticle, getAllArticlesByTitle, seeAllArticles, seeArticleByAuthor, seeArticleById, seeArticlesByAuthorAndCategory, seeArticlesByCategory, seeArticlesByDate, seeArticlesByKeyword, seeMyArticles, updateArticle } from "../controller/article.controller.js";
+import multer from "multer";
 
-import { auth, isAdmin, isUser } from "../middleware/auth.js";
+import { auth,isUser } from "../middleware/auth.js";
 
 const router = express.Router();
+const upload = multer({ dest: "public/article" });
 
-// USER
-router.post("/create", auth, isUser, createArticle);
+router.post("/", auth, isUser, upload.array("images"), createArticle);
 router.get("/my-articles", auth, isUser, seeMyArticles);
+router.get("/all", auth, isUser, seeAllArticles);
+router.get("/:id", auth, isUser, seeArticleById);
+router.put("/:id", auth, isUser, upload.array("images"), updateArticle);
+router.delete("/:id", auth, isUser, deleteArticle);
+router.get("/search", auth, isUser, getAllArticlesByTitle);
+router.get("/author/:authorId", auth, isUser, seeArticleByAuthor);
+router.get("/category/:category", auth, isUser, seeArticlesByCategory);
+router.get("/date", auth, isUser, seeArticlesByDate);
+router.get("/keyword", auth, isUser, seeArticlesByKeyword);
+router.get("/author/:authorId/category/:category", auth, isUser, seeArticlesByAuthorAndCategory);
+ 
 
-// PUBLIC / ADMIN
-router.get("/approved", auth, getAllApprovedArticles);
 
-// ADMIN ONLY
-router.get("/pending", auth, isAdmin, getPendingArticles);
-router.patch("/status/:articleId", auth, isAdmin, changeArticleStatus);
-router.delete("/:articleId", auth, isAdmin, deleteArticle);
 
 export default router;

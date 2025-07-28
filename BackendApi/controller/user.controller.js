@@ -3,7 +3,18 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
-export const signUP = async (request, response) => {
+//      http://localhost:3000/user/signup   --------->post
+/*
+Data :-
+{
+  "name": "Harshita",
+  "email": "baghelharshita2005@gmail.com",
+  "password": "12345",
+  "contact": "7470361548"
+}
+
+*/
+export const signUp = async (request, response) => {
   try {
     const { name, email, password, contact, role } = request.body;
     const user = await User.findOne({ email });
@@ -26,12 +37,23 @@ export const verifyAccount = async (request, response) => {
     const { email } = request.body;
     await User.updateOne({ email }, { $set: { isVerified: true } });
 
-    return response.status(200).json({ message: "Account Verified Successfully" });
+    return response
+      .status(200)
+      .json({ message: "Account Verified Successfully" });
   } catch (error) {
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+//     http://localhost:3000/user/login   --------->post
+/*
+Data :-
+{
+  "email": "baghelharshita2005@gmail.com",
+  "password": "12345"
+}
+
+*/
 export const login = async (request, response) => {
   try {
     const { email, password } = request.body;
@@ -56,6 +78,7 @@ export const login = async (request, response) => {
   }
 };
 
+//     http://localhost:3000/user/logout   --------->get
 export const logout = (request, response) => {
   try {
     response.clearCookie("token");
@@ -66,22 +89,65 @@ export const logout = (request, response) => {
   }
 };
 
+//     http://localhost:3000/user/profile/:userId   --------->patch
+/*
+  Data  According to profile:-
+{
+  profile by multer form-data 
+  "address": "123 Main St",
+  "city": "Anytown",
+  "state": "CA",
+  "country": "USA",
+  "dob": "1990-01-01",
+  "bio": "Hello, I'm Harshita!",
+  "designation": "Software Engineer",
+
+}
+  */
 export const createProfile = async (request, response) => {
   try {
-    const user = await User.findById(request.params.userId);
-
-    user.profile.imageName = request.file.filename;
-    user.profile.address = request.body.address;
-    user.name = request.body.name ?? user.name;
-    user.contact = request.body.contact ?? user.contact;
-
-    await user.save();
-    return response.status(201).json({ message: "Profile updated..." });
+    const { userId } = request.params;
+    const {
+      address,
+      city,
+      state,
+      country,
+      dob,
+      bio,
+      designation,
+    } = request.body;
+    const profileImage = request.file ? request.file.filename : undefined;
+    const user = await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          "profile.address": address,
+          "profile.city": city,
+          "profile.state": state,
+          "profile.country": country,
+          "profile.dob": dob,
+          "profile.bio": bio,
+          "profile.designation": designation,
+        },
+        $setOnInsert: {
+          "profile.profileImage": profileImage,
+        },
+      },
+      { new: true, upsert: true }
+    ).select("-password");
+    if (!user) return response.status(404).json({ message: "User not found" });
+    if (user.profile.profileImage)
+      user.profile.profileImage = `http://localhost:3000/profile/${user.profile.profileImage}`;
+    return response
+      .status(200)
+      .json({ message: "Profile created/updated successfully", user });
   } catch (error) {
-    return response.status(500).json({ error: "Internal Server Error" });
+    console.log(error);
+    return response.status(500).json({ message: "Internal server error" });
   }
 };
 
+//     http://localhost:3000/user/:userId   --------->get
 export const getUserById = async (request, response) => {
   try {
     const user = await User.findById(request.params.userId).select("-password");
@@ -95,7 +161,7 @@ export const getUserById = async (request, response) => {
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
-
+//     http://localhost:3000/user/   --------->get
 export const getAllUsers = async (request, response) => {
   try {
     const users = await User.find().select("-password");
@@ -105,21 +171,26 @@ export const getAllUsers = async (request, response) => {
   }
 };
 
-export const updateUser = async (request, response) => {
+//     http://localhost:3000/user/:userId   --------->put
+export const updateUserProfile = async (request, response) => {
   try {
-    const { name, contact, bio } = request.body;
+    const { userId } = request.params;
+    const { name, email, contact, role, bio } = request.body;
     const user = await User.findByIdAndUpdate(
-      request.params.userId,
-      { $set: { name, contact, bio } },
+      userId,
+      { name, email, contact, role, bio },
       { new: true }
     ).select("-password");
-
-    return response.status(200).json({ message: "User updated", user });
+    if (!user) return response.status(404).json({ message: "User not found" });
+    return response
+      .status(200)
+      .json({ message: "User updated successfully", user });
   } catch (error) {
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+//     http://localhost:3000/user/:userId   --------->delete
 export const deleteUser = async (request, response) => {
   try {
     await User.findByIdAndDelete(request.params.userId);
@@ -128,6 +199,25 @@ export const deleteUser = async (request, response) => {
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
+ //    http://localhost:3000/user/search?name=harshita   --------->get
+export const getAllUserByName = async (request, response) => {
+  try {
+    const { name } = request.query;
+    console.log(name);
+    const users = await User.find({
+      name: { $regex: name, $options: "i" },
+    }).select("-password");
+
+    if (users.length === 0) {
+      return response.status(404).json({ message: "No users found" });
+    }
+    return response.status(200).json({ users });
+  } catch (error) {
+    console.error(error);
+    return response.status(500).json({ error: "Internal Server Error", errorMessage: error.message });
+  }
+};
+
 
 const sendEmail = (email, name) => {
   return new Promise((resolve, reject) => {

@@ -2,7 +2,6 @@ import { Dialect } from "../models/dialect.model.js";
 
 // ------------------ USER APIs ------------------
 
-// Create a new dialect (status: pending by default)
 export const createDialect = async (req, res) => {
   try {
     const { word, meaning, language, example, audioLink } = req.body;
@@ -12,7 +11,7 @@ export const createDialect = async (req, res) => {
       language,
       example,
       audioLink,
-      author: req.user.id, // assuming auth middleware adds `user` to request
+      author: req.user.id, 
     });
     res.status(201).json({ message: "Dialect submitted for review", dialect });
   } catch (err) {
@@ -33,7 +32,7 @@ export const getUserDialects = async (req, res) => {
 
 // ------------------ ADMIN APIs ------------------
 
-// Get all dialects (with optional status filter)
+
 export const getAllDialects = async (req, res) => {
   try {
     const { status } = req.query;
@@ -75,9 +74,7 @@ export const deleteDialect = async (req, res) => {
   }
 };
 
-// ------------------ COMMON / EXTRA APIs ------------------
 
-// Get approved dialects only (for public)
 export const getApprovedDialects = async (req, res) => {
   try {
     const dialects = await Dialect.find({ status: "approved" });
@@ -87,27 +84,3 @@ export const getApprovedDialects = async (req, res) => {
   }
 };
 
-// Search dialects by word (approved only)
-export const searchDialectByWord = async (req, res) => {
-  try {
-    const { word } = req.query;
-    const dialects = await Dialect.find({
-      word: { $regex: word, $options: "i" },
-      status: "approved",
-    });
-    res.status(200).json({ dialects });
-  } catch (err) {
-    res.status(500).json({ error: "Error searching dialects" });
-  }
-};
-
-// Filter by language (approved only)
-export const filterByLanguage = async (req, res) => {
-  try {
-    const { language } = req.query;
-    const dialects = await Dialect.find({ language, status: "approved" });
-    res.status(200).json({ dialects });
-  } catch (err) {
-    res.status(500).json({ error: "Error filtering by language" });
-  }
-};

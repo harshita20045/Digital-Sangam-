@@ -1,29 +1,34 @@
 import express from "express";
 import multer from "multer";
+import { auth,isUser } from "../middleware/auth.js";
 import {
-  signUP,
+  signUp,
   verifyAccount,
   login,
   logout,
   createProfile,
   getUserById,
   getAllUsers,
-  updateUser,
+
   deleteUser,
+  updateUserProfile,
+  getAllUserByName,
 } from "../controller/user.controller.js";
 
 const upload = multer({ dest: "public/profile" });
 const router = express.Router();
 
-router.post("/signup", signUP);
+router.post("/signup", signUp);
 router.post("/verification", verifyAccount);
 router.post("/login", login);
-router.get("/logout", logout);
+router.get("/logout", isUser, logout);
 
-router.patch("/profile/:userId", upload.single("imageName"), createProfile);
-router.get("/:userId", getUserById);
-router.get("/", getAllUsers);
-router.put("/:userId", updateUser);
-router.delete("/:userId", deleteUser);
+router.get("/search", auth, isUser, getAllUserByName);
+router.patch("/profile/:userId", upload.single("profileImage"), auth, isUser, createProfile);
+router.get("/:userId", auth, isUser, getUserById);
+router.get("/", auth, isUser, getAllUsers);
+router.put("/:userId", auth, isUser, updateUserProfile);
+router.delete("/:userId", auth, isUser, deleteUser);
+
 
 export default router;

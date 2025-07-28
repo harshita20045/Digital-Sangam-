@@ -4,6 +4,10 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import userRouter from "./routes/user.route.js";
 import articleRouter from "./routes/article.route.js";
+import dialectRouter from "./routes/dialect.route.js";
+import commentRouter from "./routes/comment.route.js";
+import quizRouter from "./routes/quiz.route.js";
+import quizAttemptRouter from "./routes/quizAttempt.route.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -23,6 +27,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/user", userRouter);
 app.use("/article", articleRouter);
+app.use("/dialect", dialectRouter);
+app.use("/comment", commentRouter);
+app.use("/quiz", quizRouter);
+app.use("/quizAttempt", quizAttemptRouter);
+
 
 app.listen(process.env.PORT, () => {
   console.log("Server Started");

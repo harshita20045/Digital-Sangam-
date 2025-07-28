@@ -1,5 +1,5 @@
 import express from "express";
-import { auth, isAdmin } from "../middlewares/auth.js";
+import { auth, isAdmin } from "../middleware/auth.js";
 import {
   addComment,
   deleteComment,

@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       default: "user",
     },
-      isVerified: {
+    isVerified: {
       type: Boolean,
       default: false,
     },
@@ -53,47 +53,41 @@ const userSchema = new mongoose.Schema(
       {
         badgename: {
           type: String,
-        
         },
         badgeImage: {
           type: String,
-        
         },
       },
     ],
- profile: {
-      imageName: String,
-      address: String,
-    },
-    bio: {
-      type: String,
-      trim: true,
-      maxLength: 500,
-    },
-    dob: {
-      type: Date,
-     
-    },
-    socialLinks: [
-      {
-        platform: {
-          type: String,
-      
-        },
-        url: {
-          type: String,
-      
-        },
+    profile: {
+      profileImage: {
+        type: String,
+        default: "https://example.com/default-profile-image.png",
       },
-    ],
-   
-    isVerified: {
-      type: Boolean,
-      default: false,
-  },
-},
 
-  { versionKey: false }
+      address: String,
+      city: String,
+      state: String,
+      country: String,
+      dob: Date,
+      bio: String,
+      designation: String,
+      socialLinks: [
+        {
+          platform: {
+            type: String,
+          },
+          url: {
+            type: String,
+          },
+        },
+      ],
+    }
+  },
+  {
+    timestamps: true, 
+    versionKey: false
+  }
 );
 
 export const User = mongoose.model("user", userSchema);
