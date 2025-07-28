@@ -6,7 +6,7 @@ function Digital() {
     <div className="digital-section">
       <div className="row">
         <div className="col-12 col-md-6 text-part ">
-          <h1 className="ml-5 mt-5 " style={{fontWeight:"300" ,fontSize:"60px"}}>
+          <h1 className="ml-5 mt-5 " style={{fontWeight:"400" ,fontSize:"60px"}}>
             Digital <br />
             <span className="highlight">Sangam</span>
           </h1>
