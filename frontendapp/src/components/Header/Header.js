@@ -41,9 +41,9 @@ function Header() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link className="nav-link" to="/articles">
                 Articles
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/contact">
@@ -59,8 +59,8 @@ function Header() {
           </ul>
         </div>
         <div>
-          <button className="btn btn-dark ml-2">Login</button>
-          <button className="btn btn-dark ml-2">Sign Up</button>
+          <Link className="btn btn-dark ml-2 fw-semibold text-center"  style={{height:"35px",fontSize:"15px"}} to="/login">Login</Link>
+          <Link className="btn btn-dark ml-2 fw-semibold" style={{height:"35px",fontSize:"15px"}} to="/sign-up">Sign Up</Link>
         </div>
       </div>
     </>
