@@ -21,8 +21,8 @@ function Header() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ml-5">
+        <div className="collapse navbar-collapse" id="navbarNav" >
+          <ul className="navbar-nav ml-5" style={{color:"#000000"}}>
             <li className="nav-item">
               <Link className="nav-link" to="/">
                 Home
