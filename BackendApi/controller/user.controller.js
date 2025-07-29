@@ -21,9 +21,8 @@ export const signUp = async (request, response) => {
     if (user) {
       return response.status(400).json({ message: "User already exists" });
     }
-
-    await User.create({ name, email, password, contact, role });
     await sendEmail(email, name);
+    await User.create({ name, email, password, contact, role });
 
     return response.status(201).json({ message: "Signup successful" });
   } catch (error) {
@@ -58,14 +57,14 @@ export const login = async (request, response) => {
   try {
     const { email, password } = request.body;
     const user = await User.findOne({ email });
-    if (!user) return response.status(400).json({ message: "User not found" });
+    if (!user) return response.status(400).json({ error: "User not found" });
 
     if (!user.isVerified)
-      return response.status(401).json({ message: "Account not verified" });
+      return response.status(401).json({ error: "Account not verified" });
 
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare)
-      return response.status(400).json({ message: "Invalid Password" });
+      return response.status(400).json({ error: "Invalid Password" });
 
     user.password = undefined;
     const token = generateToken(user.id, user.email, user.role);
@@ -74,7 +73,7 @@ export const login = async (request, response) => {
     return response.status(200).json({ message: "Login successful", user });
   } catch (error) {
     console.log(error);
-    return response.status(500).json({ message: "Internal server error" });
+    return response.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -107,15 +106,8 @@ export const logout = (request, response) => {
 export const createProfile = async (request, response) => {
   try {
     const { userId } = request.params;
-    const {
-      address,
-      city,
-      state,
-      country,
-      dob,
-      bio,
-      designation,
-    } = request.body;
+    const { address, city, state, country, dob, bio, designation } =
+      request.body;
     const profileImage = request.file ? request.file.filename : undefined;
     const user = await User.findByIdAndUpdate(
       userId,
@@ -199,7 +191,7 @@ export const deleteUser = async (request, response) => {
     return response.status(500).json({ error: "Internal Server Error" });
   }
 };
- //    http://localhost:3000/user/search?name=harshita   --------->get
+//    http://localhost:3000/user/search?name=harshita   --------->get
 export const getAllUserByName = async (request, response) => {
   try {
     const { name } = request.query;
@@ -214,10 +206,11 @@ export const getAllUserByName = async (request, response) => {
     return response.status(200).json({ users });
   } catch (error) {
     console.error(error);
-    return response.status(500).json({ error: "Internal Server Error", errorMessage: error.message });
+    return response
+      .status(500)
+      .json({ error: "Internal Server Error", errorMessage: error.message });
   }
 };
-
 
 const sendEmail = (email, name) => {
   return new Promise((resolve, reject) => {

@@ -2,8 +2,20 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 import { IoPricetagOutline } from "react-icons/io5";
 import { FiBookOpen } from "react-icons/fi";
 import image from "../../../images/triveniSangam.jpg";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import EndPoint from ".././../../apis/EndPoint";
 
 function Story() {
+  const [article, setArticle] = useState([]);
+  useEffect(() => {
+    loadArticles();
+  }, []);
+  const loadArticles = async () => {
+    let response = await axios.get(EndPoint.all_articles);
+    console.log(response.data);
+    setArticle(response.data);
+  };
   return (
     <>
       <div
@@ -99,34 +111,35 @@ function Story() {
         </div>
 
         <div className="row g-4">
-         
-            <div  className="col-sm-6 col-md-4 col-lg-3">
-              <div className="card h-100 shadow-sm border-0">
-                <img
-                  src={image}
-                  className="card-img-top rounded-top"
-                  alt="Article"
-                  style={{ height: "180px", objectFit: "cover" }}
-                />
-                <div className="card-body d-flex flex-column">
-                  <h6 className="fw-bold mb-2">Card Title</h6>
-                  <p className="text-muted small flex-grow-1">
-                    Short article summary to give a preview of the content.
-                  </p>
-                  <a href="#" className="btn btn-dark btn-sm mt-auto">
-                    Read More →
-                  </a>
+          {article.map((article, index) => {
+            return (
+              <div key={index} className="col-sm-6 col-md-4 col-lg-3">
+                <div className="card h-100 shadow-sm border-0">
+                  <img
+                    src={article.images[0]}
+                    className="card-img-top rounded-top"
+                    alt="Article"
+                    style={{ height: "180px", objectFit: "cover" }}
+                  />
+                  <div className="card-body d-flex flex-column">
+                    <h6 className="fw-bold mb-2">{article.title}</h6>
+                    <p className="text-muted small flex-grow-1">
+                      Short article summary to give a preview of the content.
+                    </p>
+                    <a href="#" className="btn btn-dark btn-sm mt-auto">
+                      Read More →
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          
+            );
+          })}
         </div>
       </div>
 
-     
       <div className="container my-5">
         <div className="d-flex align-items-center mb-3">
-          <FiBookOpen  size={26} className="me-2" />
+          <FiBookOpen size={26} className="me-2" />
           <h4 className="mb-0">All Articles</h4>
         </div>
 

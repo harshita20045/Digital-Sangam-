@@ -9,7 +9,7 @@ const upload = multer({ dest: "public/article" });
 
 router.post("/", auth, isUser, upload.array("images"), createArticle);
 router.get("/my-articles", auth, isUser, seeMyArticles);
-router.get("/all", auth, isUser, seeAllArticles);
+router.get("/all", seeAllArticles);
 router.get("/:id", auth, isUser, seeArticleById);
 router.put("/:id", auth, isUser, upload.array("images"), updateArticle);
 router.delete("/:id", auth, isUser, deleteArticle);
