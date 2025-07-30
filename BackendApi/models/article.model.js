@@ -13,6 +13,16 @@ let articleSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    shortDescription: {
+      type: String,
+      required: true,
+      trim: true,
+      maxLength: 300,
+    },
+    readTime: {
+      type: Number, 
+      required: true,
+    },
     category: {
       type: String,
       required: true,
@@ -23,26 +33,22 @@ let articleSchema = new mongoose.Schema(
       ref: "user",
       required: true,
     },
-
     status: {
       type: String,
-      enum: ["pending","approved", "rejected"],
+      enum: ["pending", "approved", "rejected"],
       default: "pending",
       required: true,
     },
-
     images: [
       {
         type: String,
-       
       },
     ],
-
   },
   {
     timestamps: true,
-  },
-  { versionKey: false }
+    versionKey: false,
+  }
 );
 
 export const Article = mongoose.model("article", articleSchema);

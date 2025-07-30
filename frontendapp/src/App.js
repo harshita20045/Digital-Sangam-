@@ -7,6 +7,8 @@ import Contact from './components/Contact/Contact';
 import Login from './components/login/Login';
 import SignUp from './components/signUp/SignUp';
 import Article from './components/Articles/Article';
+import Profile from './components/Profile/Profile';
+import Dialect from './components/Dialects/Dialect';
 
 function App() {
   return <>
@@ -18,6 +20,9 @@ function App() {
     <Route path="/login" element={<Login/>}/>
     <Route path="/sign-up" element={<SignUp/>}/>
     <Route path="/articles" element={<Article/>}/>
+    <Route path="/profile" element={<Profile/>}/>
+    <Route path="/edit-profile" element={<Profile/>}/>
+    <Route path="/dialects" element={<Dialect/>}/>
 
    
   </Routes>

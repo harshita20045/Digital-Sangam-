@@ -7,7 +7,7 @@ import { auth,isUser } from "../middleware/auth.js";
 const router = express.Router();
 const upload = multer({ dest: "public/article" });
 
-router.post("/", auth, isUser, upload.array("images"), createArticle);
+router.post("/",  upload.array("images"), createArticle);
 router.get("/my-articles", auth, isUser, seeMyArticles);
 router.get("/all", seeAllArticles);
 router.get("/:id", auth, isUser, seeArticleById);

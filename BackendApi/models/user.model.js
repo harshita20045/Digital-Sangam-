@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema(
     profile: {
       profileImage: {
         type: String,
-        default: "https://example.com/default-profile-image.png",
+        default: "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg",
       },
 
       address: String,

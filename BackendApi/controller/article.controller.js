@@ -12,24 +12,32 @@ Data :-
 */
 export const createArticle = async (request, response) => {
   try {
-    const { title, content, category,  status } = request.body;
-    const images = request.files.map(file => file.filename);
-    let author = request.user.id; 
+    const { title, content, category, status, shortDescription } = request.body;
+    const images = request.files?.map(file => file.filename) || [];
+    const author = request.user.id;
+
+    // Calculate estimated read time (words / 200 words per minute)
+    const wordCount = content.trim().split(/\s+/).length;
+    const readTime = Math.ceil(wordCount / 200);
 
     const article = await Article.create({
       title,
       content,
+      shortDescription,
+      readTime,
       category,
       author,
       status,
-      images
+      images,
     });
+
     return response.status(201).json({ message: "Article created successfully", article });
   } catch (error) {
     console.error(error);
     return response.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // http://localhost:3000/article/my-articles --------->get
 export const seeMyArticles = async (request, response) => {
