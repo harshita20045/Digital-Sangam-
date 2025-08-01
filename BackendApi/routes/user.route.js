@@ -24,7 +24,7 @@ router.post("/login", login);
 router.get("/logout", isUser, logout);
 
 router.get("/search", auth, isUser, getAllUserByName);
-router.patch("/profile/:userId", upload.single("profileImage"), auth, isUser, createProfile);
+router.patch("/profile/:userId", upload.single("profileImage"), createProfile);
 router.get("/:userId", auth, isUser, getUserById);
 router.get("/", auth, isUser, getAllUsers);
 router.put("/:userId", auth, isUser, updateUserProfile);

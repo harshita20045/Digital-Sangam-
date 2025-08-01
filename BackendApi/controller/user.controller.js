@@ -105,37 +105,37 @@ export const logout = (request, response) => {
   */
 export const createProfile = async (request, response) => {
   try {
-    const { userId } = request.params;
-    const { address, city, state, country, dob, bio, designation } =
-      request.body;
-    const profileImage = request.file ? request.file.filename : undefined;
-    const user = await User.findByIdAndUpdate(
-      userId,
-      {
-        $set: {
-          "profile.address": address,
-          "profile.city": city,
-          "profile.state": state,
-          "profile.country": country,
-          "profile.dob": dob,
-          "profile.bio": bio,
-          "profile.designation": designation,
-        },
-        $setOnInsert: {
-          "profile.profileImage": profileImage,
-        },
-      },
-      { new: true, upsert: true }
-    ).select("-password");
+    const user = await User.findById(request.params.userId);
+    console.log(user);
     if (!user) return response.status(404).json({ message: "User not found" });
-    if (user.profile.profileImage)
-      user.profile.profileImage = `http://localhost:3000/profile/${user.profile.profileImage}`;
+    console.log(request.file.profileImage);
+    console.log(request.body);
+    user.name = request.body.name ?? user.name;
+    user.contact = request.body.contact ?? user.contact;
+    user.profile.address = request.body.address;
+    user.profile.city = request.body.city;
+    user.profile.state = request.body.state;
+    user.profile.country = request.body.country;
+    user.profile.dob = request.body.dob;
+    user.profile.bio = request.body.bio;
+    user.profile.designation = request.body.designation;
+    user.profile.socialLinks.linkedin = request.body.linkedin;
+    user.profile.socialLinks.twitter = request.body.twitter;
+    user.profile.socialLinks.facebook = request.body.facebook;
+    user.profile.socialLinks.instagram = request.body.instagram;
+
+    if (request.file) {
+      user.profile.profileImage = request.file.filename;
+    }
+
+    await user.save();
+
     return response
-      .status(200)
-      .json({ message: "Profile created/updated successfully", user });
-  } catch (error) {
-    console.log(error);
-    return response.status(500).json({ message: "Internal server error" });
+      .status(201)
+      .json({ message: "Profile updated successfully", user });
+  } catch (err) {
+    console.error(err);
+    return response.status(500).json({ error: "Internal Server Error" });
   }
 };
 

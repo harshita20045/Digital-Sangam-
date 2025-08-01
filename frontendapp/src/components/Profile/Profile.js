@@ -9,43 +9,64 @@ import {
 import { MdEmail } from "react-icons/md";
 import { getCurrentUser } from "../auth/Auth";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../apis/EndPoint";
+import { useEffect, useState } from "react";
 
 function Profile() {
   const user = getCurrentUser();
-  let navigate=useNavigate()
-const handleEdit=async (event)=>{
-event.preventDefault()
-navigate("/edit-profile")
-}
-  const {
-    name,
-    email,
-    isVerified,
-    contact,
-    createdAt,
-    profile = {},
-  } = user || {};
+  const navigate = useNavigate();
+
+  const [savedData, setSavedData] = useState({});
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem("profileData");
+    if (stored) {
+      setSavedData(JSON.parse(stored));
+    }
+  }, []);
 
   const {
-    profileImage,
-    location = "Not specified",
-    bio = "No bio provided.",
-    website,
-  } = profile;
+    name = user?.name,
+    email = user?.email,
+    isVerified = user?.isVerified,
+    contact = user?.contact,
+    address = "",
+    city = "",
+    state = "",
+    country = "",
+    dob = "",
+    bio = user?.profile?.bio || "",
+    designation = "",
+    linkedin = "",
+    facebook = "",
+    twitter = "",
+    instagram = "",
+  } = savedData;
+
+  const profileImage = user?.profile?.profileImage;
+  const location =
+    user?.profile?.location || [address, city, state, country].filter(Boolean).join(", ");
+
+  const website = user?.profile?.website;
+  const createdAt = user?.createdAt;
 
   const formattedDate = createdAt
     ? new Date(createdAt).toLocaleString("en-US", {
         month: "long",
         year: "numeric",
       })
-    : "N/A";
+    : null;
+
+  const handleEdit = (event) => {
+    event.preventDefault();
+    navigate("/edit-profile");
+  };
 
   return (
     <>
       <Header />
 
       <div className="container py-5">
-      
         <div className="card shadow-sm border-0 mb-4 rounded-4">
           <div
             className="rounded-top"
@@ -57,69 +78,62 @@ navigate("/edit-profile")
           <div className="card-body text-center mt-n5">
             <img
               src={
-                profileImage ||
-                "https://via.placeholder.com/100?text=No+Image"
+                profileImage
+                  ? `${BASE_URL}/profile/${profileImage}`
+                  : "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
               }
               alt="User"
               className="rounded-circle border border-3 border-white"
-              style={{ width: "100px", marginTop: "-50px" }}
+              style={{ width: "100px",height:"100px", marginTop: "-50px" }}
             />
 
-            <h4 className="mt-3 fw-bold">
-              {name || "Unnamed User"}{" "}
-              {isVerified && (
-                <FaCheckCircle color="green" size={18} title="Verified" />
-              )}
-            </h4>
+            {name && (
+              <h4 className="mt-3 fw-bold">
+                {name}{" "}
+                {isVerified && (
+                  <FaCheckCircle color="green" size={18} title="Verified" />
+                )}
+              </h4>
+            )}
             <p className="text-muted mb-1">
-              {email || "No email"} · {location} · Joined {formattedDate}
+              {email && `${email} · `} {location && `${location} · `}
+              {formattedDate && `Joined ${formattedDate}`}
             </p>
-            <p className="text-secondary small mb-3">{bio}</p>
+            {bio && <p className="text-secondary small mb-3">{bio}</p>}
             <div className="d-flex justify-content-center gap-2 mb-3">
-              <button onClick={handleEdit} className="btn btn-sm btn-outline-danger">
+              <button
+                onClick={handleEdit}
+                className="btn btn-sm btn-outline-danger"
+              >
                 Edit Profile
               </button>
-              
-            </div>
-          </div>
-        </div>
-
-       
-        <div className="row text-center mb-4">
-          <div className="col-6 col-md-2 mb-3">
-            <div className="p-3 border rounded shadow-sm bg-white">
-              <h5 className="fw-bold">My Dialects</h5>
-              <small className="text-muted">12</small>
-            </div>
-          </div>
-          <div className="col-6 col-md-2 mb-3">
-            <div className="p-3 border rounded shadow-sm bg-white">
-              <h5 className="fw-bold">My Articles</h5>
-              <small className="text-muted">12</small>
             </div>
           </div>
         </div>
 
         <div className="row g-4">
-         
           <div className="col-md-4">
             <div className="card border-0 shadow-sm rounded-4 p-3 h-100">
               <h6>📞 Contact Information</h6>
               <div className="small text-muted mt-3">
-                <p>
-                  <MdEmail className="me-2 text-warning" /> {email || "N/A"}
-                </p>
-                <p>
-                  <FaPhone className="me-2 text-primary" />{" "}
-                  {contact || "Not provided"}
-                </p>
-                <p>
-                  <FaMapMarkerAlt className="me-2 text-success" />{" "}
-                  {location || "Not specified"}
-                </p>
-                <p>
-                  <FaGlobe className="me-2 text-info" />{" "}
-                  {website ? (
+                {email && (
+                  <p>
+                    <MdEmail className="me-2 text-warning" /> {email}
+                  </p>
+                )}
+                {contact && (
+                  <p>
+                    <FaPhone className="me-2 text-primary" /> {contact}
+                  </p>
+                )}
+                {location && (
+                  <p>
+                    <FaMapMarkerAlt className="me-2 text-success" /> {location}
+                  </p>
+                )}
+                {website && (
+                  <p>
+                    <FaGlobe className="me-2 text-info" />
                     <a
                       href={website}
                       target="_blank"
@@ -128,37 +142,37 @@ navigate("/edit-profile")
                     >
                       {website}
                     </a>
-                  ) : (
-                    "No website"
-                  )}
-                </p>
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
-      
-          <div className="col-md-4">
-            <div className="card border-0 shadow-sm rounded-4 p-3 h-100">
-              <h6>👤 About Me</h6>
-              <p className="small text-muted mt-3">{bio}</p>
+          {(bio || designation || dob) && (
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm rounded-4 p-3 h-100">
+                <h6>👤 About Me</h6>
+                {bio && <p className="small text-muted mt-3">Bio: {bio}</p>}
+                {designation && <p className="small text-muted">Designation: {designation}</p>}
+                {dob && <p className="small text-muted">DOB: {dob}</p>}
+              </div>
             </div>
-          </div>
+          )}
 
-         
-          <div className="col-md-4">
-            <div className="card border-0 shadow-sm rounded-4 p-3 h-100">
-              <h6>🏅 Badges</h6>
-              {user.badges && user.badges.length > 0 ? (
-                <ul className="small mt-3">
-                  {user.badges.map((badge, index) => (
-                    <li key={index}>{badge}</li>
-                  ))}
+          {(linkedin || facebook || twitter || instagram) && (
+            <div className="col-md-4">
+              <div className="card border-0 shadow-sm rounded-4 p-3 h-100">
+                <h6>🔗 Social Links</h6>
+                <ul className="small mt-3 list-unstyled">
+                  {linkedin && <li>LinkedIn: {linkedin}</li>}
+                  {facebook && <li>Facebook: {facebook}</li>}
+                  {twitter && <li>Twitter: {twitter}</li>}
+                  {instagram && <li>Instagram: {instagram}</li>}
                 </ul>
-              ) : (
-                <p className="text-muted small mt-3">No badges earned yet.</p>
-              )}
+              </div>
             </div>
-          </div>
+          )}
+          
         </div>
       </div>
 

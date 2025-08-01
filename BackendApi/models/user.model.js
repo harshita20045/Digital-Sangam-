@@ -60,33 +60,22 @@ const userSchema = new mongoose.Schema(
       },
     ],
     profile: {
-      profileImage: {
-        type: String,
-        default: "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg",
-      },
-
-      address: String,
-      city: String,
-      state: String,
       country: String,
       dob: Date,
       bio: String,
       designation: String,
-      socialLinks: [
-        {
-          platform: {
-            type: String,
-          },
-          url: {
-            type: String,
-          },
-        },
-      ],
-    }
+      profileImage: String,
+      socialLinks: {
+        linkedin: String,
+        twitter: String,
+        facebook:String,
+        instagram:String,
+      },
+    },
   },
   {
-    timestamps: true, 
-    versionKey: false
+    timestamps: true,
+    versionKey: false,
   }
 );
 

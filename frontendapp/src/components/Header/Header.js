@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../../images/logoHeader.png";
-import { isUserExist,getCurrentUser } from "../auth/Auth";
+import { isUserExist, getCurrentUser } from "../auth/Auth";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Tooltip from "@mui/material/Tooltip";
 import { BASE_URL } from "../../apis/EndPoint";
 
 function Header() {
   let navigate = useNavigate();
-  let user=getCurrentUser()
- //  console.log(user.profile.profileImage)
+  let user = getCurrentUser();
+  //  console.log(user.profile.profileImage)
   const handleLogOut = async () => {
     sessionStorage.setItem("current-user", "");
     sessionStorage.clear();
@@ -35,7 +35,10 @@ function Header() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse ml-5" id="navbarNav">
-          <ul className="navbar-nav ml-5 d-flex justify-content-center align-items-center gap-4" style={{ color: "#000000" }}>
+          <ul
+            className="navbar-nav ml-5 d-flex justify-content-center align-items-center gap-4"
+            style={{ color: "#000000" }}
+          >
             <li className="nav-item">
               <Link className="nav-link text-dark" to="/">
                 Home
@@ -90,8 +93,33 @@ function Header() {
         )}
         {isUserExist() && (
           <div className="d-flex gap-2">
+            <Link
+              className="fw-semibold fs-6 me-4"
+              style={{
+                color: "black",
+                textDecoration: "none",
+                marginTop: "3px",
+              }}
+              to="/my-articles"
+            >
+              My Articles
+            </Link>{" "}
+            <Link
+              className="fw-semibold fs-6 me-4"
+              style={{
+                color: "black",
+                textDecoration: "none",
+                marginTop: "3px",
+              }}
+              to="/my-dialects"
+            >
+              My dialects
+            </Link>
             <img
-              src={user.profile.profileImage}
+              src={
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCHU5JIkqfD2z1KMc4c1nW4zdArnxBM3cCcQ&s" ||
+                user.profile.profileImage
+              }
               style={{ borderRadius: "50%", height: "30px", width: "30px" }}
             />
             <Link
@@ -109,7 +137,10 @@ function Header() {
         )}
         {isUserExist() && (
           <Tooltip title="Log Out">
-            <LogoutIcon style={{height:"30px",width:"30px"}} onClick={handleLogOut} />
+            <LogoutIcon
+              style={{ height: "30px", width: "30px" }}
+              onClick={handleLogOut}
+            />
           </Tooltip>
         )}
       </div>
