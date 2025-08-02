@@ -62,13 +62,22 @@ export const login = async (request, response) => {
     if (!user.isVerified)
       return response.status(401).json({ error: "Account not verified" });
 
+    if (request.url.includes("/admin") && user.role !== "admin") {
+      return response.status(403).json({ error: "Unauthorized access" });
+    }
+
     const passwordCompare = await bcrypt.compare(password, user.password);
     if (!passwordCompare)
       return response.status(400).json({ error: "Invalid Password" });
 
     user.password = undefined;
     const token = generateToken(user.id, user.email, user.role);
-    response.cookie("token", token);
+    response.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
 
     return response.status(200).json({ message: "Login successful", user });
   } catch (error) {
