@@ -31,7 +31,8 @@ export const createDialect = async (req, res) => {
 
 export const getUserDialects = async (req, res) => {
   try {
-    const dialects = await Dialect.find({ author: req.user.id });
+    const {id}=req.params
+    const dialects = await Dialect.find({ author: id });
     res.status(200).json({ dialects });
   } catch (err) {
     res.status(500).json({ error: "Error fetching your dialects" });

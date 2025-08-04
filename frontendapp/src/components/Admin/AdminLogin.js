@@ -33,7 +33,7 @@ function AdminLogin() {
       toast.success("Admin login successful");
 
       setTimeout(() => {
-        navigate("/admin-dashboard");
+        navigate("/admin/dashboard");
       }, 1000);
     } catch (error) {
       const msg = error.response?.data?.error || "Login failed";

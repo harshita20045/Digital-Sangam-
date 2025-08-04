@@ -15,50 +15,47 @@ import { useEffect, useState } from "react";
 function Profile() {
   const user = getCurrentUser();
   const navigate = useNavigate();
-
-  const [savedData, setSavedData] = useState({});
+  const [savedData, setSavedData] = useState(null);
 
   useEffect(() => {
-    const stored = sessionStorage.getItem("profileData");
+    const stored = sessionStorage.getItem("current-user");
     if (stored) {
       setSavedData(JSON.parse(stored));
     }
   }, []);
 
+  const profile = savedData?.profile || user?.profile || {};
   const {
     name = user?.name,
     email = user?.email,
     isVerified = user?.isVerified,
     contact = user?.contact,
-    address = "",
-    city = "",
-    state = "",
-    country = "",
-    dob = "",
-    bio = user?.profile?.bio || "",
-    designation = "",
-    linkedin = "",
-    facebook = "",
-    twitter = "",
-    instagram = "",
-  } = savedData;
+    address = profile.address || "",
+    city = profile.city || "",
+    state = profile.state || "",
+    country = profile.country || "",
+    dob = profile.dob || "",
+    bio = profile.bio || "",
+    designation = profile.designation || "",
+    linkedin = profile.linkedin || "",
+    facebook = profile.facebook || "",
+    twitter = profile.twitter || "",
+    instagram = profile.instagram || "",
+    website = profile.website || "",
+    profileImage = profile.profileImage || "",
+  } = savedData || user || {};
 
-  const profileImage = user?.profile?.profileImage;
-  const location =
-    user?.profile?.location || [address, city, state, country].filter(Boolean).join(", ");
+  const location = [address, city, state, country].filter(Boolean).join(", ");
 
-  const website = user?.profile?.website;
   const createdAt = user?.createdAt;
-
   const formattedDate = createdAt
     ? new Date(createdAt).toLocaleString("en-US", {
         month: "long",
         year: "numeric",
       })
-    : null;
+    : "";
 
-  const handleEdit = (event) => {
-    event.preventDefault();
+  const handleEdit = () => {
     navigate("/edit-profile");
   };
 
@@ -75,6 +72,7 @@ function Profile() {
               height: "120px",
             }}
           ></div>
+
           <div className="card-body text-center mt-n5">
             <img
               src={
@@ -84,7 +82,7 @@ function Profile() {
               }
               alt="User"
               className="rounded-circle border border-3 border-white"
-              style={{ width: "100px",height:"100px", marginTop: "-50px" }}
+              style={{ width: "100px", height: "100px", marginTop: "-50px" }}
             />
 
             {name && (
@@ -95,19 +93,20 @@ function Profile() {
                 )}
               </h4>
             )}
+
             <p className="text-muted mb-1">
               {email && `${email} · `} {location && `${location} · `}
               {formattedDate && `Joined ${formattedDate}`}
             </p>
+
             {bio && <p className="text-secondary small mb-3">{bio}</p>}
-            <div className="d-flex justify-content-center gap-2 mb-3">
-              <button
-                onClick={handleEdit}
-                className="btn btn-sm btn-outline-danger"
-              >
-                Edit Profile
-              </button>
-            </div>
+
+            <button
+              onClick={handleEdit}
+              className="btn btn-sm btn-outline-danger"
+            >
+              Edit Profile
+            </button>
           </div>
         </div>
 
@@ -153,7 +152,9 @@ function Profile() {
               <div className="card border-0 shadow-sm rounded-4 p-3 h-100">
                 <h6>👤 About Me</h6>
                 {bio && <p className="small text-muted mt-3">Bio: {bio}</p>}
-                {designation && <p className="small text-muted">Designation: {designation}</p>}
+                {designation && (
+                  <p className="small text-muted">Designation: {designation}</p>
+                )}
                 {dob && <p className="small text-muted">DOB: {dob}</p>}
               </div>
             </div>
@@ -172,7 +173,6 @@ function Profile() {
               </div>
             </div>
           )}
-          
         </div>
       </div>
 

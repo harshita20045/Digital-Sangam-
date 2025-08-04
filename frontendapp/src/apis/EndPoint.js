@@ -7,6 +7,7 @@ export default {
   CREATE_PROFILE: BASE_URL + "/user/profile",
   UPLOAD_ARTICLE: BASE_URL + "/article/",
   AUTHOR_ARTICLE: BASE_URL + "/article/author",
+  AUTHOR_DIALECT: BASE_URL + "/dialect/author",
   DIALECT_LIST: BASE_URL + "/dialect/all",
   LANGUAGE_LIST: BASE_URL + "/language/all",
   SeeAllArticle: BASE_URL + "/admin/articles",
@@ -20,4 +21,5 @@ export default {
   ADD_LANGUAGE: BASE_URL + "/admin/languages",
   UPDATE_DIALECT_STATUS: BASE_URL + "/admin/update-dialects",
   UPDATE_ARTICLE_STATUS: BASE_URL + "/admin/update-articles",
+  LOG_OUT:BASE_URL+"/user/logout"
 };

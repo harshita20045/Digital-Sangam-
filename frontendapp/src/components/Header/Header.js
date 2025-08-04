@@ -3,16 +3,22 @@ import logo from "../../images/logoHeader.png";
 import { isUserExist, getCurrentUser } from "../auth/Auth";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Tooltip from "@mui/material/Tooltip";
-import { BASE_URL } from "../../apis/EndPoint";
+import EndPoint from "../../apis/EndPoint";
+import axios from "axios";
 
 function Header() {
   let navigate = useNavigate();
   let user = getCurrentUser();
   //  console.log(user.profile.profileImage)
   const handleLogOut = async () => {
-    sessionStorage.setItem("current-user", "");
-    sessionStorage.clear();
-    navigate("/");
+    try {
+      await axios.get(EndPoint.LOG_OUT, { withCredentials: true });
+      sessionStorage.setItem("current-user", "");
+      sessionStorage.clear();
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <>

@@ -16,7 +16,7 @@ import { auth, isAdmin } from "../middleware/auth.js";
 const router = express.Router();
 
 router.post("/add", auth,createDialect);
-router.get("/my", auth, getUserDialects);
+router.get("/author/:id",  getUserDialects);
 router.get("/all",  getAllDialects);
 router.put("/update/:id", auth, updateDialectStatus);
 router.delete("/delete/:id", auth, deleteDialect);

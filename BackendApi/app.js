@@ -36,7 +36,6 @@ app.use("/user", userRouter);
 app.use("/article", articleRouter);
 app.use("/dialect", dialectRouter);
 app.use("/language",languageRouter)
-//app.use("/quiz", quizRouter);
 app.use("/quizAttempt", quizAttemptRouter);
 app.use("/admin", adminRouter);
 
