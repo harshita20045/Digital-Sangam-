@@ -1,6 +1,6 @@
 import express from "express";
 import multer from "multer";
-import { auth,isUser } from "../middleware/auth.js";
+import { auth, isUser } from "../middleware/auth.js";
 import {
   signUp,
   verifyAccount,
@@ -8,7 +8,6 @@ import {
   logout,
   getUserById,
   getAllUsers,
-
   deleteUser,
   updateUserProfile,
   getAllUserByName,
@@ -27,26 +26,49 @@ router.get("/logout", logout);
 router.get("/search", auth, isUser, getAllUserByName);
 router.patch(
   "/profile/:userId",
- (req, res, next) => {
+  (req, res, next) => {
     console.log("Url tak pahoch gaya");
     next();
   },
-  upload.single("profileImage"), 
+  upload.single("profileImage"),
   [
     body("name").optional().isString().withMessage("Name must be a string"),
-    body("contact").optional().isMobilePhone().withMessage("Invalid contact number"),
+    body("contact")
+      .optional()
+      .isMobilePhone()
+      .withMessage("Invalid contact number"),
     body("address").optional().isString(),
     body("city").optional().isString(),
     body("state").optional().isString(),
     body("country").optional().isString(),
-    body("dob").optional().isISO8601().toDate().withMessage("Invalid date of birth"),
-    body("bio").optional().isLength({ max: 300 }).withMessage("Bio should not exceed 300 characters"),
+    body("dob")
+      .optional()
+      .isISO8601()
+      .toDate()
+      .withMessage("Invalid date of birth"),
+    body("bio")
+      .optional()
+      .isLength({ max: 300 })
+      .withMessage("Bio should not exceed 300 characters"),
     body("designation").optional().isString(),
-    body("linkedin").optional({ checkFalsy: true }).isURL().withMessage("Invalid LinkedIn URL"),
-    body("twitter").optional({ checkFalsy: true }).isURL().withMessage("Invalid Twitter URL"),
-    body("facebook").optional({ checkFalsy: true }).isURL().withMessage("Invalid Facebook URL"),
-    body("instagram").optional({ checkFalsy: true }).isURL().withMessage("Invalid Instagram URL"),
-  ], (req, res, next) => {
+    body("linkedin")
+      .optional({ checkFalsy: true })
+      .isURL()
+      .withMessage("Invalid LinkedIn URL"),
+    body("twitter")
+      .optional({ checkFalsy: true })
+      .isURL()
+      .withMessage("Invalid Twitter URL"),
+    body("facebook")
+      .optional({ checkFalsy: true })
+      .isURL()
+      .withMessage("Invalid Facebook URL"),
+    body("instagram")
+      .optional({ checkFalsy: true })
+      .isURL()
+      .withMessage("Invalid Instagram URL"),
+  ],
+  (req, res, next) => {
     console.log("validation tak");
     next();
   },
@@ -57,6 +79,5 @@ router.get("/:userId", auth, isUser, getUserById);
 router.get("/", auth, isUser, getAllUsers);
 router.put("/:userId", auth, isUser, updateUserProfile);
 router.delete("/:userId", auth, isUser, deleteUser);
-
 
 export default router;

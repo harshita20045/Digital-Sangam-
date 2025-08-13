@@ -1,37 +1,27 @@
 import { Dialect } from "../models/dialect.model.js";
 
-
 export const createDialect = async (req, res) => {
   try {
-    const { word, meaning, language, author, example } = req.body;
-    const audioFile = req.file; // multer adds this
+    const newDialect = new Dialect({
+      word: req.body.word,
+      meaning: req.body.meaning,
 
-    if (!word || !meaning || !language || !author || !example || !audioFile) {
-      return res.status(400).json({ error: "All fields including audio file are required." });
-    }
-
-    const audioPath = `/uploads/audio/${audioFile.filename}`;
-
-    const dialect = await Dialect.create({
-      word: word.trim(),
-      meaning: meaning.trim(),
-      language: language.trim(),
-      example: example.trim(),
-      audioLink: audioPath,
-      author,
+      language: req.body.language,
+      examples: req.body.examples,
+      author: req.body.author,
+      audioLink: req.body.audioLink,
     });
-
-    res.status(201).json({ message: "Dialect submitted for review", dialect });
+    console.log("Creating new dialect:", newDialect);
+    const savedDialect = await newDialect.save();
+    res.status(201).json(savedDialect);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to create dialect" });
+    res.status(500).json({ error: err.message });
   }
 };
 
-
 export const getUserDialects = async (req, res) => {
   try {
-    const {id}=req.params
+    const { id } = req.params;
     const dialects = await Dialect.find({ author: id });
     res.status(200).json({ dialects });
   } catch (err) {
@@ -39,13 +29,9 @@ export const getUserDialects = async (req, res) => {
   }
 };
 
-// ------------------ ADMIN APIs ------------------
-
-
 export const getAllDialects = async (req, res) => {
   try {
-   
-    const dialects = await Dialect.find().populate("author", "name email");
+    const dialects = await Dialect.find().populate("author", "name email").populate("language", "language");
     res.status(200).json({ dialects });
   } catch (err) {
     res.status(500).json({ error: "Error fetching dialects" });
@@ -81,7 +67,6 @@ export const deleteDialect = async (req, res) => {
   }
 };
 
-
 export const getApprovedDialects = async (req, res) => {
   try {
     const dialects = await Dialect.find({ status: "approved" });
@@ -90,4 +75,3 @@ export const getApprovedDialects = async (req, res) => {
     res.status(500).json({ error: "Error fetching approved dialects" });
   }
 };
-

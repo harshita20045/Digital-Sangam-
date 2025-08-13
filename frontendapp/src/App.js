@@ -16,6 +16,8 @@ import ArticleUploadForm from "./components/Articles/My Articles/ArticleUploadFo
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminLogin from "./components/Admin/AdminLogin";
 import MyDialects from "./components/Dialects/Mydialects";
+import SubmitDialectPage from "./components/Dialects/SubmitDialectPage";
+import ViewMore from "./components/Dialects/ViewMore";
 
 function App() {
   return (
@@ -34,10 +36,15 @@ function App() {
         <Route path="/article/:id" element={<ArticleDetail />} />
         <Route path="/my-articles" element={<MyArticles />} />
         <Route path="/my-dialects" element={<MyDialects />} />
+        <Route path="/add-dialect" element={<SubmitDialectPage />} />
+        <Route path="/view-more" element={<ViewMore />} />
+
+
         <Route path="/upload-articles" element={<ArticleUploadForm />} />
         <Route path="/admin/dashboard" element={<AdminDashboard/>} />
         <Route path="/admin/login" element={<AdminLogin/>} />
       </Routes>
+      
     </>
   );
 }

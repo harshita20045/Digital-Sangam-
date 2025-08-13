@@ -15,8 +15,6 @@ export const createArticle = async (request, response) => {
     const { title, content, category, status, author,shortDescription } = request.body;
     const images = request.files?.map(file => file.filename) || [];
     
-
-    // Calculate estimated read time (words / 200 words per minute)
     const wordCount = content.trim().split(/\s+/).length;
     const readTime = Math.ceil(wordCount / 200);
 

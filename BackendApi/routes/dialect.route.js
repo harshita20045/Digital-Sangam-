@@ -11,11 +11,12 @@ createDialect,
   
 } from "../controller/dialect.controller.js";
 import { auth, isAdmin } from "../middleware/auth.js";
+import multer from "multer";
 
 
 const router = express.Router();
-
-router.post("/add", auth,createDialect);
+const upload = multer({ dest: "public/audio" });
+router.post("/add",upload.single("audio"), createDialect);
 router.get("/author/:id",  getUserDialects);
 router.get("/all",  getAllDialects);
 router.put("/update/:id", auth, updateDialectStatus);

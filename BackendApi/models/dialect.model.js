@@ -8,20 +8,32 @@ let dialectSchema = new mongoose.Schema(
       minLength: 2,
       maxLength: 100,
     },
+
+    
     meaning: {
-      type: String,
-      required: true,
-      trim: true,
+      hindi: {
+        type: String,
+      },
+      english: {
+        type: String,
+      },
     },
     language: {
-      type:String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "language",
       required: true,
     },
-    example: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    examples: [
+      {
+        exampleSentence: {
+          type: String,
+        },
+        exampleMeaning: {
+          hindi: { type: String },
+          english: { type: String },
+        },
+      },
+    ],
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
@@ -39,8 +51,10 @@ let dialectSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+       
   },
-  {
+  { 
+       
     timestamps: true,
   },
   { versionKey: false }

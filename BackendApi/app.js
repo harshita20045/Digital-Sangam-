@@ -34,7 +34,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use("/user", userRouter);
 app.use("/article", articleRouter);
-app.use("/dialect", dialectRouter);
+app.use("/dialect",(req, res, next) => {
+    console.log("app tak pahoch gaya",req.body);
+    next();
+  }, dialectRouter);
 app.use("/language",languageRouter)
 app.use("/quizAttempt", quizAttemptRouter);
 app.use("/admin", adminRouter);

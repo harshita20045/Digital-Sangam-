@@ -21,5 +21,6 @@ export default {
   ADD_LANGUAGE: BASE_URL + "/admin/languages",
   UPDATE_DIALECT_STATUS: BASE_URL + "/admin/update-dialects",
   UPDATE_ARTICLE_STATUS: BASE_URL + "/admin/update-articles",
-  LOG_OUT:BASE_URL+"/user/logout"
+  LOG_OUT:BASE_URL+"/user/logout",
+  ADD_DIALECT:BASE_URL+"/dialect/add"
 };

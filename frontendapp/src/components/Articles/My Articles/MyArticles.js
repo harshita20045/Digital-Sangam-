@@ -42,6 +42,25 @@ function MyArticles() {
 };
 
 
+  const [filter, setFilter] = useState("all");
+
+  // Calculate stats dynamically from articles
+  const statsDynamic = {
+    total: article.length,
+    published: article.filter(a => a.status === "published").length,
+    underReview: article.filter(a => a.status === "pending" || a.status === "under review").length,
+    rejected: article.filter(a => a.status === "rejected").length,
+  };
+
+  // Filtered articles based on filter state
+  const filteredArticles = article.filter(a => {
+    if (filter === "all") return true;
+    if (filter === "published") return a.status === "published";
+    if (filter === "pending") return a.status === "pending" || a.status === "under review";
+    if (filter === "rejected") return a.status === "rejected";
+    return true;
+  });
+
   return (
     <>
       <Header />
@@ -61,25 +80,25 @@ function MyArticles() {
         <div className="row text-center mb-4 g-3">
           <div className="col-md-3">
             <div className="bg-white p-4 rounded shadow-sm">
-              <h4 className="mb-0">{stats.total}</h4>
+              <h4 className="mb-0">{statsDynamic.total}</h4>
               <small className="text-muted">Total Articles</small>
             </div>
           </div>
           <div className="col-md-3">
             <div className="bg-white p-4 rounded shadow-sm">
-              <h4 className="mb-0 text-success">{stats.published}</h4>
+              <h4 className="mb-0 text-success">{statsDynamic.published}</h4>
               <small className="text-muted">Published</small>
             </div>
           </div>
           <div className="col-md-3">
             <div className="bg-white p-4 rounded shadow-sm">
-              <h4 className="mb-0 text-warning">{stats.underReview}</h4>
+              <h4 className="mb-0 text-warning">{statsDynamic.underReview}</h4>
               <small className="text-muted">Under Review</small>
             </div>
           </div>
           <div className="col-md-3">
             <div className="bg-white p-4 rounded shadow-sm">
-              <h4 className="mb-0 text-danger">{stats.rejected}</h4>
+              <h4 className="mb-0 text-danger">{statsDynamic.rejected}</h4>
               <small className="text-muted">Rejected</small>
             </div>
           </div>
@@ -87,84 +106,103 @@ function MyArticles() {
 
         <ul className="nav nav-pills mb-4 justify-content-center">
           <li className="nav-item">
-            <button className="nav-link active">All ({stats.total})</button>
+            <button
+              className={`nav-link${filter === "all" ? " active" : ""}`}
+              onClick={() => setFilter("all")}
+            >
+              All ({statsDynamic.total})
+            </button>
           </li>
           <li className="nav-item">
-            <button className="nav-link">Published ({stats.published})</button>
+            <button
+              className={`nav-link${filter === "published" ? " active" : ""}`}
+              onClick={() => setFilter("published")}
+            >
+              Published ({statsDynamic.published})
+            </button>
           </li>
           <li className="nav-item">
-            <button className="nav-link">Pending ({stats.underReview})</button>
+            <button
+              className={`nav-link${filter === "pending" ? " active" : ""}`}
+              onClick={() => setFilter("pending")}
+            >
+              Pending ({statsDynamic.underReview})
+            </button>
           </li>
           <li className="nav-item">
-            <button className="nav-link">Rejected ({stats.rejected})</button>
+            <button
+              className={`nav-link${filter === "rejected" ? " active" : ""}`}
+              onClick={() => setFilter("rejected")}
+            >
+              Rejected ({statsDynamic.rejected})
+            </button>
           </li>
         </ul>
 
-        {article.length === 0 ? (
+        {filteredArticles.length === 0 ? (
           <div className="text-center my-5">
             <h4>No articles found</h4>
             <p>You have not posted any articles yet.</p>
           </div>
         ) : (
-  article.map((articles, index) => (
-
-          <div
-            key={index}
-            className="card flex-md-row shadow-sm border-0 overflow-hidden mb-4"
-          >
-            <img
-              src={
-                articles.images && articles.images.length > 0
-                  ? `${BASE_URL}/article/${articles.images[0]}`
-                  : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc9APxkj0xClmrU3PpMZglHQkx446nQPG6lA&s"
-              }
-              className="img-fluid"
-              alt="article"
-              style={{
-                width: "250px",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-            <div className="card-body">
-              <button
-                className="mt-0 mb-2 fs-7 rounded-pill"
+          filteredArticles.map((articles, index) => (
+            <div
+              key={index}
+              className="card flex-md-row shadow-sm border-0 overflow-hidden mb-4"
+            >
+              <img
+                src={
+                  articles.images && articles.images.length > 0
+                    ? `${BASE_URL}/article/${articles.images[0]}`
+                    : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc9APxkj0xClmrU3PpMZglHQkx446nQPG6lA&s"
+                }
+                className="img-fluid"
+                alt="article"
                 style={{
-                  border: "#f64100",
-                  color: "#f64100",
-                  fontSize: "10px",
+                  width: "250px",
+                  height: "100%",
+                  objectFit: "cover",
                 }}
-              >
-                {articles.category}
-              </button>
-              <h5 className="fw-bold">{articles.title}</h5>
-              <p className="text-muted mb-2">{articles.shortDescription}</p>
-              <div className="d-flex justify-content-between small text-muted mb-3">
-                <span style={{ fontSize: "12px" }}>
-                  <PermIdentityIcon style={{ height: "20px", width: "20px" }} />{" "}
-                  {articles.author.name}
-                </span>
-                <span style={{ fontSize: "12px" }}>
-                  <CalendarTodayIcon
-                    style={{ height: "20px", width: "20px" }}
-                  />{" "}
-                 {new Date(articles.createdAt).toLocaleDateString()}
-                </span>{" "}
-                <span style={{ fontSize: "12px" }}>
-                  <AccessTimeIcon style={{ height: "20px", width: "20px" }} />{" "}
-                  {articles.readTime} minute
-                </span>
+              />
+              <div className="card-body">
+                <button
+                  className="mt-0 mb-2 fs-7 rounded-pill"
+                  style={{
+                    border: "#f64100",
+                    color: "#f64100",
+                    fontSize: "10px",
+                  }}
+                >
+                  {articles.category}
+                </button>
+                <h5 className="fw-bold">{articles.title}</h5>
+                <p className="text-muted mb-2">{articles.shortDescription}</p>
+                <div className="d-flex justify-content-between small text-muted mb-3">
+                  <span style={{ fontSize: "12px" }}>
+                    <PermIdentityIcon style={{ height: "20px", width: "20px" }} />{" "}
+                    {articles.author.name}
+                  </span>
+                  <span style={{ fontSize: "12px" }}>
+                    <CalendarTodayIcon
+                      style={{ height: "20px", width: "20px" }}
+                    />{" "}
+                    {new Date(articles.createdAt).toLocaleDateString()}
+                  </span>{" "}
+                  <span style={{ fontSize: "12px" }}>
+                    <AccessTimeIcon style={{ height: "20px", width: "20px" }} />{" "}
+                    {articles.readTime} minute
+                  </span>
+                </div>
+                <button
+                  onClick={() => handleRead(articles)}
+                  className="btn btn-outline-dark btn-sm"
+                >
+                  Read Article →
+                </button>
               </div>
-              <button
-                onClick={() => handleRead(articles)}
-                href="#"
-                className="btn btn-outline-dark btn-sm"
-              >
-                Read Article →
-              </button>
             </div>
-          </div>
-        )))}
+          ))
+        )}
       </div>
       <Footer />
     </>
